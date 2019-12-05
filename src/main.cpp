@@ -1,36 +1,17 @@
 #include <cstdio>
 #include <thread>
+#include <chrono>
+
+#include "./printer/printer.hpp"
 #include "./actor.hpp"
-
-struct testActorBody
-{
-    int internal;
-
-    testActorBody(int n) : internal{n} {}
-
-    int testFunc(int external)
-    {
-        printf("int: %i\next: %i\n", internal, external);
-        return internal * external;
-    }
-
-    void increment()
-    {
-        internal++;
-    }
-};
 
 int main()
 {
-    Actor<testActorBody> a{13};
+    Actor<Printer> a{Printer{}};
 
-    auto t1 = a.call(&testActorBody::testFunc, 17);
-    printf("ret: %i\n\n", t1.get());
+    a.call(&Printer::printTest);
 
-    a.call(&testActorBody::increment);
-
-    auto t2 = a.call(&testActorBody::testFunc, 17);
-    printf("ret: %i\n", t2.get());
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 
     return 0;
 }

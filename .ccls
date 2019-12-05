@@ -1,2 +1,3 @@
 clang
 %cpp %hpp -std=c++17
+%cpp -lncurses
