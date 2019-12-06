@@ -34,9 +34,14 @@ public:
     std::future<std::any> pushWork(std::packaged_task<std::any()>&& func)
     {
         workQueueMutex.lock();
+
         auto ret = func.get_future();
         workQueue.push(std::move(func));
-        workQueueEmptyMutex.unlock();
+
+        workQueueEmptyMutex.try_lock();     // <-- if this line doesn't lock when it is unlocked
+                                            // (which the standard reserves the right to do),
+        workQueueEmptyMutex.unlock();       // <-- then this line will be undefined
+                                            // TODO: fix above.
         workQueueMutex.unlock();
 
         return ret;
