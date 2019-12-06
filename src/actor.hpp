@@ -13,7 +13,6 @@
 #include <memory>
 #include <any>
 
-
 class WorkerThread
 {
 public:
@@ -21,27 +20,33 @@ public:
     WorkerThread()
     {
         threadLooping = new std::atomic_bool(true);
+        workQueueEmptyMutex.lock();
         thr = std::thread(&WorkerThread::workerThreadLoop, this);
     }
 
     ~WorkerThread()
     {
         threadLooping->store(false);
+        workQueueEmptyMutex.unlock();
         if(thr.joinable()) thr.join();
     }
 
     std::future<std::any> pushWork(std::packaged_task<std::any()>&& func)
     {
-        std::lock_guard<std::mutex> workQueueGuard(workQueueMutex);
+        workQueueMutex.lock();
         auto ret = func.get_future();
         workQueue.push(std::move(func));
+        workQueueEmptyMutex.unlock();
+        workQueueMutex.unlock();
+
         return ret;
     }
 
 private:
     
     std::queue<std::packaged_task<std::any()>> workQueue;
-    std::mutex workQueueMutex;
+    std::mutex workQueueMutex;      // atomizes workQueue
+    std::mutex workQueueEmptyMutex; // blocks thread until work is available. reduces CPU usage.
 
     std::thread thr;
     std::atomic_bool* threadLooping;
@@ -51,7 +56,9 @@ private:
         while(threadLooping->load())
         {
             {
-                std::lock_guard<std::mutex> workQueueGuard{workQueueMutex};
+                workQueueEmptyMutex.lock();
+                std::lock_guard<std::mutex> workQueueGuard(workQueueMutex);
+                workQueueEmptyMutex.unlock();
 
                 for(
                     auto work = &workQueue.front(); 
@@ -61,6 +68,7 @@ private:
                 ){
                     (*work)();
                 }
+                workQueueEmptyMutex.lock();
             }
             std::this_thread::yield();
         }
