@@ -84,29 +84,33 @@ template<typename T>
 class Actor
 {
 public:
-    Actor<T>(T&& newSelf) : self{newSelf} {} 
+    Actor<T>(T* newSelf) : self{newSelf}, thr{new WorkerThread{}} {} 
 
     ~Actor<T>() = default;
 
     template<typename ... ArgT, typename RetT>
     ActorReturn<RetT> call(RetT (T::*mthd) (ArgT...), ArgT ... args)
     {
-        std::packaged_task<std::any()> mthdPacked{[=]() {return std::any((self.*mthd)(args...));}};
-        return ActorReturn<RetT>{thr.pushWork(std::move(mthdPacked))};
+        std::packaged_task<std::any()> mthdPacked{[=]() {return std::any(((*self).*mthd)(args...));}};
+        return ActorReturn<RetT>{thr->pushWork(std::move(mthdPacked))};
     }
 
     template<typename ... ArgT>
     std::future<std::any> call(void (T::*mthd) (ArgT...), ArgT ... args)
     {
         std::packaged_task<std::any()> mthdPacked{[=]() {
-            (self.*mthd)(args...);
+            ((*self).*mthd)(args...);
             return std::any();
         }};
-        return thr.pushWork(std::move(mthdPacked));
+        return thr->pushWork(std::move(mthdPacked));
     }
 
 private:
-    T self;
-    WorkerThread thr;
+    // as long as shared_ptr's controller is atomic, 
+    // there should be little issue. self is only to be
+    // touched by thr, and thr's public functions should
+    // be atomic.
+    std::shared_ptr<T> self;
+    std::shared_ptr<WorkerThread> thr;
 };
 

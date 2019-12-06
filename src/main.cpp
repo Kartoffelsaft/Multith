@@ -7,7 +7,7 @@
 
 int main()
 {
-    Actor<Printer> a{Printer{}};
+    Actor<Printer> a{new Printer{}};
 
     a.call(&Printer::printTest);
 
