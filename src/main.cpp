@@ -7,9 +7,9 @@
 
 int main()
 {
-    Actor<Printer> a{new Printer{}};
+    Actor<Windowhandler> a{new Windowhandler{}};
 
-    a.call(&Printer::printTest);
+    a.call(&Windowhandler::printTest);
 
     std::this_thread::sleep_for(std::chrono::seconds(2));
 

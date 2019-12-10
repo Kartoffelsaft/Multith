@@ -1,24 +1,23 @@
-#include <curses.h>
-
 #include "./printer.hpp"
 
-Printer::Printer()
+Windowhandler::Windowhandler() : 
+    window{
+        sf::RenderWindow{
+            sf::VideoMode(WINDOW_INIT_SIZE_X, WINDOW_INIT_SIZE_Y), 
+            WINDOW_NAME
+        }
+    }
 {
-    initscr();
-    cbreak();
-    noecho();
-    nodelay(stdscr, true);
-    keypad(stdscr, true);
+    
 }
 
-Printer::~Printer()
+Windowhandler::~Windowhandler()
 {
-    endwin();
+    window.close();
 }
 
-void Printer::printTest()
+void Windowhandler::printTest()
 {
-    clear();
-    mvaddch(5, 3, 'l');
-    refresh();
+    window.clear(sf::Color::Magenta);
+    window.display();
 }

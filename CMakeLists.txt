@@ -3,10 +3,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(multith)
 
-find_package(Threads)
-set(CURSES_NEED_NCURSES TRUE)
-find_package(Curses)
+find_package(Threads REQUIRED)
+#find_package(SFML 2 REQUIRED audio graphics window system)
+set(SFML_LIBRARIES sfml-graphics sfml-audio sfml-window sfml-system)
 
 add_executable(multith ./src/main.cpp ./src/printer/printer.cpp)
 
-target_link_libraries(multith ${CMAKE_THREAD_LIBS_INIT} ${CURSES_LIBRARIES})
+target_link_libraries(multith ${CMAKE_THREAD_LIBS_INIT} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})

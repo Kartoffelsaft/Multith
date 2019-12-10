@@ -1,15 +1,20 @@
 #pragma once
 
-#include <curses.h>
+#include <SFML/Graphics.hpp>
 
-class Printer
+static char const * const WINDOW_NAME{"Multith"};
+static int  const         WINDOW_INIT_SIZE_X{800};
+static int  const         WINDOW_INIT_SIZE_Y{600};
+
+class Windowhandler
 {
 public:
-    Printer();
-    ~Printer();
+    Windowhandler();
+    ~Windowhandler();
 
     void printTest();
 
 private:
     
+    sf::RenderWindow window;
 };
