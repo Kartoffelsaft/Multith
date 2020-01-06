@@ -6,12 +6,12 @@
 #include <atomic>
 #include <queue>
 #include <functional>
-#include <assert.h>
 #include <vector>
 #include <future>
 #include <tuple>
 #include <memory>
 #include <any>
+#include <type_traits>
 
 class WorkerThread
 {
@@ -40,7 +40,7 @@ public:
 
         workQueueEmptyMutex.try_lock();     // <-- if this line doesn't lock when it is unlocked
                                             // (which the standard reserves the right to do),
-        workQueueEmptyMutex.unlock();       // <-- then this line will be undefined
+        workQueueEmptyMutex.unlock();       // <-- then this line will be undefined behavior
                                             // TODO: fix above.
         workQueueMutex.unlock();
 
@@ -101,21 +101,26 @@ public:
 
     ~Actor<T>() = default;
 
-    template<typename ... ArgT, typename RetT>
+    // the standard forbids partial template specialization,
+    // so blame them for the if constexpr
+    template<typename RetT, typename ... ArgT>
     ActorReturn<RetT> call(RetT (T::*mthd) (ArgT...), ArgT ... args)
     {
-        std::packaged_task<std::any()> mthdPacked{[=]() {return std::any(((*self).*mthd)(args...));}};
-        return ActorReturn<RetT>{thr->pushWork(std::move(mthdPacked))};
-    }
-
-    template<typename ... ArgT>
-    std::future<std::any> call(void (T::*mthd) (ArgT...), ArgT ... args)
-    {
-        std::packaged_task<std::any()> mthdPacked{[=]() {
-            ((*self).*mthd)(args...);
-            return std::any();
-        }};
-        return thr->pushWork(std::move(mthdPacked));
+        if constexpr(!std::is_same<RetT, void>::value)
+        {
+            std::packaged_task<std::any()> mthdPacked{[=]() {
+                return std::any(((*self).*mthd)(args...));
+            }};
+            return ActorReturn<RetT>{thr->pushWork(std::move(mthdPacked))};
+        }
+        else
+        {
+            std::packaged_task<std::any()> mthdPacked{[=]() {
+                ((*self).*mthd)(args...);
+                return std::any();
+            }};
+            return ActorReturn<RetT>{thr->pushWork(std::move(mthdPacked))};
+        }
     }
 
 private:

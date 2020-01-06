@@ -1,17 +1,23 @@
-#include <cstdio>
-#include <thread>
 #include <chrono>
+#include <thread>
+#include <atomic>
 
 #include "./printer/printer.hpp"
+#include "./tickCoordinator/tickCoordinator.hpp"
 #include "./actor.hpp"
+#include "./staticAtomics.hpp"
+
 
 int main()
 {
-    Actor<Windowhandler> a{new Windowhandler{}};
+    Actor<WindowHandler> window{new WindowHandler{}};
+    Actor<TickCoordinator> tickCoordinator{new TickCoordinator{}};
 
-    a.call(&Windowhandler::printTest);
+    tickCoordinator.call(&TickCoordinator::giveOutboundActors, window);
+    tickCoordinator.call(&TickCoordinator::tickLoop);
 
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    while(StaticAtomics::running.load())
+    {std::this_thread::sleep_for(std::chrono::milliseconds(500));}
 
     return 0;
 }
