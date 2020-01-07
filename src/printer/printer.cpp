@@ -21,6 +21,7 @@ WindowHandler::~WindowHandler()
 
 void WindowHandler::onTick()
 {
+    handleInput();
     circleX++;
     testShape.setPosition(circleX, 10);
     render();

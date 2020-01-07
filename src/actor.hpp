@@ -17,9 +17,8 @@ class WorkerThread
 {
 public:
     
-    WorkerThread()
+    WorkerThread(): threadLooping{new std::atomic_bool(true)}
     {
-        threadLooping = new std::atomic_bool(true);
         workQueueEmptyMutex.lock();
         thr = std::thread(&WorkerThread::workerThreadLoop, this);
     }
@@ -33,7 +32,7 @@ public:
 
     std::future<std::any> pushWork(std::packaged_task<std::any()>&& func)
     {
-        workQueueMutex.lock();
+        std::lock_guard<std::mutex> workQueueGuard{workQueueMutex};
 
         auto ret = func.get_future();
         workQueue.push(std::move(func));
@@ -42,8 +41,6 @@ public:
                                             // (which the standard reserves the right to do),
         workQueueEmptyMutex.unlock();       // <-- then this line will be undefined behavior
                                             // TODO: fix above.
-        workQueueMutex.unlock();
-
         return ret;
     }
 
@@ -54,7 +51,7 @@ private:
     std::mutex workQueueEmptyMutex; // blocks thread until work is available. reduces CPU usage.
 
     std::thread thr;
-    std::atomic_bool* threadLooping;
+    std::atomic_bool* const threadLooping;
 
     void workerThreadLoop()
     {
@@ -63,7 +60,6 @@ private:
             {
                 workQueueEmptyMutex.lock();
                 std::lock_guard<std::mutex> workQueueGuard(workQueueMutex);
-                workQueueEmptyMutex.unlock();
 
                 for(
                     auto work = &workQueue.front(); 
@@ -73,7 +69,6 @@ private:
                 ){
                     (*work)();
                 }
-                workQueueEmptyMutex.lock();
             }
             std::this_thread::yield();
         }

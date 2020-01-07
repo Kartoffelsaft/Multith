@@ -25,6 +25,7 @@ void TickCoordinator::tickLoop()
 
         while(now < lastTick + TICK_TIME)
         {
+            now = std::chrono::steady_clock::now();
             std::this_thread::sleep_for(lastTick + TICK_TIME - now);
         }
 
