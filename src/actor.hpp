@@ -12,6 +12,7 @@
 #include <memory>
 #include <any>
 #include <type_traits>
+#include <condition_variable>
 
 class WorkerThread
 {
@@ -19,28 +20,25 @@ public:
     
     WorkerThread(): threadLooping{new std::atomic_bool(true)}
     {
-        workQueueEmptyMutex.lock();
         thr = std::thread(&WorkerThread::workerThreadLoop, this);
     }
 
     ~WorkerThread()
     {
         threadLooping->store(false);
-        workQueueEmptyMutex.unlock();
         if(thr.joinable()) thr.join();
     }
 
     std::future<std::any> pushWork(std::packaged_task<std::any()>&& func)
     {
-        std::lock_guard<std::mutex> workQueueGuard{workQueueMutex};
-
         auto ret = func.get_future();
-        workQueue.push(std::move(func));
+        {
+            std::lock_guard<std::mutex> workQueueGuard{workQueueMutex};
 
-        workQueueEmptyMutex.try_lock();     // <-- if this line doesn't lock when it is unlocked
-                                            // (which the standard reserves the right to do),
-        workQueueEmptyMutex.unlock();       // <-- then this line will be undefined behavior
-                                            // TODO: fix above.
+            workQueue.push(std::move(func));
+        }
+        waiter.notify_one();
+
         return ret;
     }
 
@@ -48,7 +46,7 @@ private:
     
     std::queue<std::packaged_task<std::any()>> workQueue;
     std::mutex workQueueMutex;      // atomizes workQueue
-    std::mutex workQueueEmptyMutex; // blocks thread until work is available. reduces CPU usage.
+    std::condition_variable waiter; // waits for incoming function calls (reduces CPU usage)
 
     std::thread thr;
     std::atomic_bool* const threadLooping;
@@ -58,8 +56,7 @@ private:
         while(threadLooping->load())
         {
             {
-                workQueueEmptyMutex.lock();
-                std::lock_guard<std::mutex> workQueueGuard(workQueueMutex);
+                std::unique_lock<std::mutex> workQueueGuard(workQueueMutex);
 
                 for(
                     auto work = &workQueue.front(); 
@@ -69,6 +66,7 @@ private:
                 ){
                     (*work)();
                 }
+                waiter.wait(workQueueGuard);
             }
             std::this_thread::yield();
         }

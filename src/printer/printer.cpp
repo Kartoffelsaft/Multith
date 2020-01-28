@@ -44,7 +44,7 @@ void WindowHandler::handleInput()
         switch(e.type)
         {
             case sf::Event::Closed:
-                StaticAtomics::running.store(false);
+                StaticAtomics::running->store(false);
                 break;
         }
     }

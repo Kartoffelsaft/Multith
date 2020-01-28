@@ -17,7 +17,7 @@ void TickCoordinator::tickLoop()
 {
     assert(outboundActors.has_value());
     lastTick = std::chrono::steady_clock::now();
-    while(StaticAtomics::running.load())
+    while(StaticAtomics::running->load())
     {
         outboundActors->sendTicks();
 
