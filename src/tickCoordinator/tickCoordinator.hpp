@@ -2,9 +2,11 @@
 
 #include <optional>
 #include <chrono>
+#include <memory>
 
 #include "../actor.hpp"
 #include "../printer/printer.hpp"
+#include "../stateHandler/stateHandler.hpp"
 #include "../staticAtomics.hpp"
 
 auto  const TICK_TIME = std::chrono::milliseconds(15);
@@ -18,7 +20,8 @@ public:
     ~TickCoordinator();
 
     void giveOutboundActors(
-        Actor<WindowHandler> nprinter
+        std::weak_ptr<Actor<WindowHandler>> nprinter,
+        std::weak_ptr<Actor<StateHandler>> nState
     );
 
     void tickLoop();
@@ -31,6 +34,8 @@ private:
     {
         void sendTicks();
 
-        Actor<WindowHandler> printer;
+        std::weak_ptr<Actor<WindowHandler>> printer;
+        std::weak_ptr<Actor<StateHandler>> state;
+
     }; std::optional<OutboundActors> outboundActors;
 };

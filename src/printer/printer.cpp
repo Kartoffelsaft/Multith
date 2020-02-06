@@ -27,6 +27,14 @@ void WindowHandler::onTick()
     render();
 }
 
+void WindowHandler::giveOutboundActors(
+        std::weak_ptr<Actor<StateHandler>> nstate
+){
+    outboundActors = {
+        nstate
+    };
+}
+
 void WindowHandler::render()
 {
     window.clear(sf::Color::Magenta);
@@ -44,7 +52,7 @@ void WindowHandler::handleInput()
         switch(e.type)
         {
             case sf::Event::Closed:
-                StaticAtomics::running->store(false);
+                outboundActors->state.lock()->call(&StateHandler::close);
                 break;
         }
     }

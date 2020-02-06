@@ -1,9 +1,11 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <memory>
 
 #include "./printer/printer.hpp"
 #include "./tickCoordinator/tickCoordinator.hpp"
+#include "./stateHandler/stateHandler.hpp"
 #include "./actor.hpp"
 #include "./staticAtomics.hpp"
 
@@ -11,17 +13,24 @@
 int main()
 {
     {
-        Actor<WindowHandler> window{new WindowHandler{}};
-        Actor<TickCoordinator> tickCoordinator{new TickCoordinator{}};
+        std::shared_ptr<Actor<WindowHandler>> window{new Actor<WindowHandler>};
+        std::shared_ptr<Actor<TickCoordinator>> tickCoordinator{new Actor<TickCoordinator>};
+        std::shared_ptr<Actor<StateHandler>> state{new Actor<StateHandler>};
 
-        tickCoordinator.call(&TickCoordinator::giveOutboundActors, window);
-        tickCoordinator.call(&TickCoordinator::tickLoop);
+        tickCoordinator->call(&TickCoordinator::giveOutboundActors, 
+            (std::weak_ptr<Actor<WindowHandler>>)window,
+            (std::weak_ptr<Actor<StateHandler>>)state
+        );
+        tickCoordinator->call(&TickCoordinator::tickLoop);
 
-        while(StaticAtomics::running->load())
-        {std::this_thread::sleep_for(std::chrono::milliseconds(500));}
+        ActorReturn<bool> running;
+        do
+        {
+            running = state->call(&StateHandler::isRunning);
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+        }
+        while(running.get());
     }
-
-    std::this_thread::sleep_for(std::chrono::seconds(3));   //wait for other threads to do their buisiness
 
     return 0;
 }

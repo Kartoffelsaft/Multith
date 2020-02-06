@@ -25,7 +25,8 @@ public:
 
     ~WorkerThread()
     {
-        threadLooping->store(false);
+        threadLooping.clear();
+        waiter.notify_one();
         if(thr.joinable()) thr.join();
     }
 
@@ -49,29 +50,24 @@ private:
     std::condition_variable waiter; // waits for incoming function calls (reduces CPU usage)
 
     std::thread thr;
-    std::atomic_bool* const threadLooping;
+    std::atomic_flag threadLooping{true};
 
     void workerThreadLoop()
     {
-        while(threadLooping->load())
+        while(threadLooping.test_and_set())
         {
-            {
-                std::unique_lock<std::mutex> workQueueGuard(workQueueMutex);
+            std::unique_lock<std::mutex> workQueueGuard(workQueueMutex);
 
-                for(
-                    auto work = &workQueue.front(); 
-                    !workQueue.empty(); 
-                    workQueue.pop(), 
-                    work = &workQueue.front()
-                ){
-                    (*work)();
-                }
-                waiter.wait(workQueueGuard);
+            for(
+                auto work = &workQueue.front(); 
+                !workQueue.empty(); 
+                workQueue.pop(), 
+                work = &workQueue.front()
+            ){
+                (*work)();
             }
-            std::this_thread::yield();
+            waiter.wait(workQueueGuard);
         }
-
-        delete threadLooping;
     }
 };
 
@@ -79,6 +75,7 @@ template<typename RetT>
 struct ActorReturn
 {
     ActorReturn<RetT>(std::future<std::any>&& nRet) : ret{std::move(nRet)} {};
+    ActorReturn<RetT>() {};
 
     std::future<std::any> ret;
 
@@ -90,7 +87,7 @@ template<typename T>
 class Actor
 {
 public:
-    Actor<T>(T* newSelf) : self{newSelf}, thr{new WorkerThread{}} {} 
+    Actor<T>() : self{T{}}, thr{WorkerThread{}} {} 
 
     ~Actor<T>() = default;
 
@@ -102,26 +99,22 @@ public:
         if constexpr(!std::is_same<RetT, void>::value)
         {
             std::packaged_task<std::any()> mthdPacked{[=]() {
-                return std::any(((*self).*mthd)(args...));
+                return std::any((self.*mthd)(args...));
             }};
-            return ActorReturn<RetT>{thr->pushWork(std::move(mthdPacked))};
+            return ActorReturn<RetT>{thr.pushWork(std::move(mthdPacked))};
         }
         else
         {
             std::packaged_task<std::any()> mthdPacked{[=]() {
-                ((*self).*mthd)(args...);
+                (self.*mthd)(args...);
                 return std::any();
             }};
-            return ActorReturn<RetT>{thr->pushWork(std::move(mthdPacked))};
+            return ActorReturn<RetT>{thr.pushWork(std::move(mthdPacked))};
         }
     }
 
 private:
-    // as long as shared_ptr's controller is atomic, 
-    // there should be little issue. self is only to be
-    // touched by thr, and thr's public functions should
-    // be atomic.
-    std::shared_ptr<T> self;
-    std::shared_ptr<WorkerThread> thr;
+    T self;
+    WorkerThread thr;
 };
 

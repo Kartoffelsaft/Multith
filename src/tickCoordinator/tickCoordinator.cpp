@@ -3,10 +3,12 @@
 #include "./tickCoordinator.hpp"
 
 void TickCoordinator::giveOutboundActors(
-    Actor<WindowHandler> nprinter
+    std::weak_ptr<Actor<WindowHandler>> nprinter,
+    std::weak_ptr<Actor<StateHandler>> nstate
 ){
     outboundActors = OutboundActors{
-        nprinter
+        nprinter,
+        nstate,
     };
 }
 
@@ -17,9 +19,11 @@ void TickCoordinator::tickLoop()
 {
     assert(outboundActors.has_value());
     lastTick = std::chrono::steady_clock::now();
-    while(StaticAtomics::running->load())
+    ActorReturn<bool> running;
+    do
     {
         outboundActors->sendTicks();
+        running = outboundActors->state.lock()->call(&StateHandler::isRunning);
 
         auto now = std::chrono::steady_clock::now();
 
@@ -31,9 +35,10 @@ void TickCoordinator::tickLoop()
 
         lastTick += TICK_TIME;
     }
+    while(running.get());
 }
 
 void TickCoordinator::OutboundActors::sendTicks()
 {
-    printer.call(&WindowHandler::onTick);
+    printer.lock()->call(&WindowHandler::onTick);
 }
