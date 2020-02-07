@@ -18,9 +18,10 @@ int main()
         std::shared_ptr<Actor<StateHandler>> state{new Actor<StateHandler>};
 
         tickCoordinator->call(&TickCoordinator::giveOutboundActors, 
-            (std::weak_ptr<Actor<WindowHandler>>)window,
-            (std::weak_ptr<Actor<StateHandler>>)state
+            std::weak_ptr{window},
+            std::weak_ptr{state}
         );
+        window->call(&WindowHandler::giveOutboundActors, std::weak_ptr{state});
         tickCoordinator->call(&TickCoordinator::tickLoop);
 
         ActorReturn<bool> running;
