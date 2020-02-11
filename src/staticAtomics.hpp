@@ -2,7 +2,9 @@
 
 #include <atomic>
 
+// Beware of using this namespace. I've tried and
+// it does some SCP worthy stuff.
+
 namespace StaticAtomics
 {
-    static std::atomic_bool* const running{new std::atomic_bool(true)};
 }

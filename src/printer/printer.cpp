@@ -1,14 +1,16 @@
 #include "./printer.hpp"
 
-WindowHandler::WindowHandler() : 
+#include <cassert>
+
+WindowHandler::WindowHandler() :
+    testShape{sf::CircleShape{}},
+    circleX{10}, 
     window{
         sf::RenderWindow{
             sf::VideoMode(WINDOW_INIT_SIZE_X, WINDOW_INIT_SIZE_Y), 
             WINDOW_NAME
         }
-    },
-    testShape{sf::CircleShape{}},
-    circleX{10}
+    }
 {
     testShape.setRadius(10);
     testShape.setFillColor(sf::Color::Green);
@@ -45,6 +47,7 @@ void WindowHandler::render()
 
 void WindowHandler::handleInput()
 {
+    assert(outboundActors.has_value());
     sf::Event e;
 
     if(window.pollEvent(e))
@@ -53,6 +56,8 @@ void WindowHandler::handleInput()
         {
             case sf::Event::Closed:
                 outboundActors->state.lock()->call(&StateHandler::close);
+                break;
+            default:
                 break;
         }
     }
