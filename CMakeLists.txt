@@ -11,6 +11,8 @@ add_executable(multith
     ./src/main.cpp 
     ./src/printer/printer.cpp 
     ./src/tickCoordinator/tickCoordinator.cpp
+    ./src/physicsModel/physicsModel.cpp
+    ./src/physicsModel/physicsModelPrintable.cpp
 )
 
 target_link_libraries(multith ${CMAKE_THREAD_LIBS_INIT} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})

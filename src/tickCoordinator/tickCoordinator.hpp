@@ -7,6 +7,7 @@
 #include "../actor.hpp"
 #include "../printer/printer.hpp"
 #include "../stateHandler/stateHandler.hpp"
+#include "../physicsModel/physicsModel.hpp"
 #include "../staticAtomics.hpp"
 
 auto  const TICK_TIME = std::chrono::milliseconds(15);
@@ -21,7 +22,8 @@ public:
 
     void giveOutboundActors(
         std::weak_ptr<Actor<WindowHandler>> nprinter,
-        std::weak_ptr<Actor<StateHandler>> nState
+        std::weak_ptr<Actor<StateHandler>> nstate,
+        std::weak_ptr<Actor<PhysicsModel>> nmodel
     );
 
     void tickLoop();
@@ -36,6 +38,7 @@ private:
 
         std::weak_ptr<Actor<WindowHandler>> printer;
         std::weak_ptr<Actor<StateHandler>> state;
+        std::weak_ptr<Actor<PhysicsModel>> model;
 
     }; std::optional<OutboundActors> outboundActors;
 };

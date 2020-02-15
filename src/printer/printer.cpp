@@ -3,18 +3,13 @@
 #include <cassert>
 
 WindowHandler::WindowHandler() :
-    testShape{sf::CircleShape{}},
-    circleX{10}, 
     window{
         sf::RenderWindow{
             sf::VideoMode(WINDOW_INIT_SIZE_X, WINDOW_INIT_SIZE_Y), 
             WINDOW_NAME
         }
     }
-{
-    testShape.setRadius(10);
-    testShape.setFillColor(sf::Color::Green);
-}
+{}
 
 WindowHandler::~WindowHandler()
 {
@@ -24,25 +19,30 @@ WindowHandler::~WindowHandler()
 void WindowHandler::onTick()
 {
     handleInput();
-    circleX++;
-    testShape.setPosition(circleX, 10);
-    render();
 }
 
 void WindowHandler::giveOutboundActors(
-        std::weak_ptr<Actor<StateHandler>> nstate
+    std::weak_ptr<Actor<StateHandler>> nstate,
+    std::weak_ptr<Actor<PhysicsModel>> nmodel
 ){
     outboundActors = {
-        nstate
+        nstate,
+        nmodel
     };
 }
 
-void WindowHandler::render()
+void WindowHandler::renderPhysicsModel(PhysicsModelPrintable data)
 {
     window.clear(sf::Color::Magenta);
-    window.draw(testShape);
-
+    data.addToWindow(&window);
+    
     window.display();
+}
+
+[[deprecated]]
+void WindowHandler::render()
+{
+    // no real use now
 }
 
 void WindowHandler::handleInput()
@@ -56,6 +56,16 @@ void WindowHandler::handleInput()
         {
             case sf::Event::Closed:
                 outboundActors->state.lock()->call(&StateHandler::close);
+                break;
+            case sf::Event::KeyPressed:
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 0.0, -1.0);}
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 0.0, 1.0);}
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, -1.0, 0.0);}
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 1.0, 0.0);}
                 break;
             default:
                 break;
