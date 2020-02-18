@@ -2,6 +2,7 @@
 
 #include "./physicsModel.hpp"
 #include "../printer/printer.hpp"
+#include "../tickCoordinator/tickCoordinator.hpp"
 
 void PhysicsModel::giveOutboundActors(
     std::weak_ptr<Actor<WindowHandler>> nprinter
@@ -20,8 +21,8 @@ void PhysicsModel::onTick()
 
 void PhysicsObject::onTick()
 {
-    posX += velX;
-    posY += velY;
+    posX += (velX / TICK_PER_SECOND);
+    posY += (velY / TICK_PER_SECOND);
 }
 
 void PhysicsModel::pushPlayer(double pushX, double pushY)
@@ -39,7 +40,7 @@ PhysicsObjectPrintable PhysicsObject::generatePrintableCircle(float radius) cons
 PhysicsModelPrintable PhysicsModel::generatePrintable() const
 {
     PhysicsModelPrintable ret;
-    ret.addPrintable(player.generatePrintableCircle(5));
+    ret.addPrintable(player.generatePrintableCircle(10));
     return ret;
 }
 
