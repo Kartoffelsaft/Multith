@@ -21,8 +21,7 @@ int main()
 
         tickCoordinator->call(&TickCoordinator::giveOutboundActors, 
             std::weak_ptr{window},
-            std::weak_ptr{state},
-            std::weak_ptr{model}
+            std::weak_ptr{state}
         );
         window->call(&WindowHandler::giveOutboundActors, 
             std::weak_ptr{state},

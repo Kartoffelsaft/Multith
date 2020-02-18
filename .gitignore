@@ -5,3 +5,5 @@ Makefile
 multith
 build
 .vscode
+.kdev4
+multith.kdev4

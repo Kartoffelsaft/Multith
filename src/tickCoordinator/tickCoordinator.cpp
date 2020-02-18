@@ -4,13 +4,11 @@
 
 void TickCoordinator::giveOutboundActors(
     std::weak_ptr<Actor<WindowHandler>> nprinter,
-    std::weak_ptr<Actor<StateHandler>> nstate,
-    std::weak_ptr<Actor<PhysicsModel>> nmodel
+    std::weak_ptr<Actor<StateHandler>> nstate
 ){
     outboundActors = OutboundActors{
         nprinter,
         nstate,
-        nmodel,
     };
 }
 
@@ -43,5 +41,4 @@ void TickCoordinator::tickLoop()
 void TickCoordinator::OutboundActors::sendTicks()
 {
     printer.lock()->call(&WindowHandler::onTick);
-    model.lock()->call(&PhysicsModel::onTick);
 }

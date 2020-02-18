@@ -19,6 +19,10 @@ WindowHandler::~WindowHandler()
 void WindowHandler::onTick()
 {
     handleInput();
+    
+    // pass tick through here instead of tickcoordinator
+    // to prevent deadlock
+    outboundActors->model.lock()->call(&PhysicsModel::onTick);
 }
 
 void WindowHandler::giveOutboundActors(
