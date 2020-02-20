@@ -42,12 +42,30 @@ void PhysicsModelPrintable::addToWindow(sf::RenderWindow* window)
                 window->draw(ncircle);
                 break;
             }
-                
+            
             case PhysicsObjectPrintable::Type::Sprite:
             {
-                // TODO: Implement
+                sf::Sprite nsprite;
+                nsprite.setPosition(printable.posX, printable.posY);
+                nsprite.setTexture(*textureCache.loadTexture(printable.type.typeData.sprite.directory));
+                window->draw(nsprite);
                 break;
             }
         }
+    }
+}
+
+sf::Texture* TextureCache::loadTexture(char const * const directory)
+{
+    if(textureHash.count(directory))
+    {
+        return &textureHash[directory];
+    }
+    else
+    {
+        sf::Texture newTexture;
+        newTexture.loadFromFile(directory);
+        textureHash[directory] = newTexture;
+        return &textureHash[directory];
     }
 }

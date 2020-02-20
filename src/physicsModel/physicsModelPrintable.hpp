@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <vector>
+#include <map>
 
 struct PhysicsObjectPrintable
 {
@@ -56,3 +57,16 @@ private:
     
     std::vector<PhysicsObjectPrintable> printables;
 };
+
+static thread_local struct TextureCache
+{
+public:
+    
+    TextureCache() = default;
+    
+    sf::Texture* loadTexture(char const * const directory);
+    
+private:
+    
+    std::map<char const *, sf::Texture> textureHash;
+} textureCache;

@@ -19,6 +19,7 @@ public:
     void onTick();
     
     PhysicsObjectPrintable generatePrintableCircle(float radius) const;
+    PhysicsObjectPrintable generatePrintableSprite(char const * const directory) const;
 private:
 };
 
