@@ -18,7 +18,11 @@ class WorkerThread
 {
 public:
     
-    WorkerThread(): threadLooping{new std::atomic_bool(true)}
+    WorkerThread(): 
+        workQueue{},
+        workQueueMutex{},
+        waiter{},
+        threadLooping{new std::atomic_bool(true)}
     {
         thr = std::thread(&WorkerThread::workerThreadLoop, this);
     }
@@ -74,7 +78,7 @@ private:
 template<typename RetT>
 struct ActorReturn
 {
-    ActorReturn<RetT>(std::future<std::any>&& nRet) : ret{std::move(nRet)} {};
+    ActorReturn<RetT>(std::future<std::any>&& nRet): ret{std::move(nRet)} {};
     ActorReturn<RetT>() {};
 
     std::future<std::any> ret;
@@ -87,7 +91,7 @@ template<typename T>
 class Actor
 {
 public:
-    Actor<T>() : self{T{}}, thr{WorkerThread{}} {} 
+    Actor<T>(): self{T{}}, thr{WorkerThread{}} {} 
 
     ~Actor<T>() = default;
 
