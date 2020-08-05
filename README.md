@@ -1,5 +1,9 @@
 # Multith
 
+I might start working on this project again as I believe I found the source of what was causing the issue. I'll keep what's below because it's still an interesting read
+
+___
+
 this is a project heavily focused on multithreading (hence the name "multith") that I have now nearly abandoned. It had (has?) potential, but I would need a much better understanding of how to work with threads and avoid undefined behavior.
 
 ## Why has work stopped on this?
