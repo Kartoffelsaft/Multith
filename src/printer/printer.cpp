@@ -8,7 +8,8 @@ WindowHandler::WindowHandler() :
             sf::VideoMode(WINDOW_INIT_SIZE_X, WINDOW_INIT_SIZE_Y), 
             WINDOW_NAME
         }
-    }
+    },
+    frame{0}
 {}
 
 WindowHandler::~WindowHandler()
@@ -38,9 +39,11 @@ void WindowHandler::giveOutboundActors(
 void WindowHandler::renderPhysicsModel(PhysicsModelPrintable data)
 {
     window.clear(sf::Color::Magenta);
-    data.addToWindow(&window);
+    data.addToWindow(&window, frame);
     
     window.display();
+
+    frame++;
 }
 
 [[deprecated]]

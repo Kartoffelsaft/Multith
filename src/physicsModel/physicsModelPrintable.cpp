@@ -16,19 +16,20 @@ PhysicsObjectPrintable::PhysicsObjectPrintable(
 PhysicsObjectPrintable::PhysicsObjectPrintable(
     double nposX, 
     double nposY, 
-    char const * const ndirectory
+    char const * const ndirectory,
+    unsigned int frames
 ) : posX{nposX}, 
     posY{nposY}, 
     type{
         .typeEnum = Type::Sprite,
-        .typeData = {.sprite = {ndirectory}}
+        .typeData = {.sprite = {ndirectory, frames}}
     }
 {}
 
 void PhysicsModelPrintable::addPrintable(PhysicsObjectPrintable nprintable)
 {printables.push_back(nprintable);}
 
-void PhysicsModelPrintable::addToWindow(sf::RenderWindow* window)
+void PhysicsModelPrintable::addToWindow(sf::RenderWindow* window, unsigned long long const frame)
 {
     for(auto printable : printables)
     {
@@ -48,6 +49,10 @@ void PhysicsModelPrintable::addToWindow(sf::RenderWindow* window)
                 sf::Sprite nsprite;
                 nsprite.setPosition(printable.posX, printable.posY);
                 nsprite.setTexture(*textureCache.loadTexture(printable.type.typeData.sprite.directory));
+                auto rect = nsprite.getTextureRect();
+                rect.width /= printable.type.typeData.sprite.frames;
+                rect.left += rect.width * (frame % printable.type.typeData.sprite.frames);
+                nsprite.setTextureRect(rect);
                 window->draw(nsprite);
                 break;
             }

@@ -25,6 +25,7 @@ public:
             struct
             {
                 char const * const directory;
+                unsigned int frames;
             } sprite;
         } typeData;
     } type;
@@ -38,7 +39,8 @@ public:
     PhysicsObjectPrintable( // sprite constructor
         double nposX, 
         double nposY, 
-        char const * const ndirectory
+        char const * const ndirectory,
+        unsigned int frames
     );
     
     ~PhysicsObjectPrintable() = default;
@@ -51,7 +53,7 @@ class PhysicsModelPrintable
 public:
     
     void addPrintable(PhysicsObjectPrintable nprintable);
-    void addToWindow(sf::RenderWindow* window);
+    void addToWindow(sf::RenderWindow* window, unsigned long long const frame);
     
 private:
     

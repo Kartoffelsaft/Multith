@@ -35,6 +35,7 @@ private:
     void handleInput();
 
     sf::RenderWindow window;
+    unsigned long long frame;
 
     struct OutboundActors{
         std::weak_ptr<Actor<StateHandler>> state;

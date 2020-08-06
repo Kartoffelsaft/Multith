@@ -34,15 +34,15 @@ void PhysicsModel::pushPlayer(double pushX, double pushY)
 PhysicsObjectPrintable PhysicsObject::generatePrintableCircle(float radius) const
 {return PhysicsObjectPrintable{posX, posY, radius};}
 
-PhysicsObjectPrintable PhysicsObject::generatePrintableSprite(char const * const directory) const
-{return PhysicsObjectPrintable{posX, posY, directory};}
+PhysicsObjectPrintable PhysicsObject::generatePrintableSprite(char const * const directory, unsigned int frame) const
+{return PhysicsObjectPrintable{posX, posY, directory, frame};}
 
 
 
 PhysicsModelPrintable PhysicsModel::generatePrintable() const
 {
     PhysicsModelPrintable ret;
-    ret.addPrintable(player.generatePrintableSprite("../assets/sprites/player.png"));
+    ret.addPrintable(player.generatePrintableSprite("../assets/sprites/player.png", 2));
     return ret;
 }
 
