@@ -42,7 +42,7 @@ PhysicsObjectPrintable PhysicsObject::generatePrintableSprite(char const * const
 PhysicsModelPrintable PhysicsModel::generatePrintable() const
 {
     PhysicsModelPrintable ret;
-    ret.addPrintable(player.generatePrintableSprite("../assets/sprites/player.png", 2));
+    ret.addPrintable(player.generatePrintableSprite("./assets/sprites/spinny.png", 6));
     return ret;
 }
 
