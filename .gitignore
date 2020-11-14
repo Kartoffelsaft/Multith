@@ -9,3 +9,4 @@ build
 multith.kdev4
 compile_commands.json
 .clangd
+.ccls
