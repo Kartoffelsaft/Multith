@@ -3,8 +3,8 @@
 #include "./tickCoordinator.hpp"
 
 void TickCoordinator::giveOutboundActors(
-    std::weak_ptr<Actor<WindowHandler>> nprinter,
-    std::weak_ptr<Actor<StateHandler>> nstate
+    std::weak_ptr<multith::Actor<WindowHandler>> nprinter,
+    std::weak_ptr<multith::Actor<StateHandler>> nstate
 ){
     outboundActors = OutboundActors{
         nprinter,
@@ -19,7 +19,7 @@ void TickCoordinator::tickLoop()
 {
     assert(outboundActors.has_value());
     lastTick = std::chrono::steady_clock::now();
-    ActorReturn<bool> running;
+    multith::ActorReturn<bool> running;
     do
     {
         outboundActors->sendTicks();

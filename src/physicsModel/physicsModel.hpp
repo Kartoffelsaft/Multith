@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "./physicsModelPrintable.hpp"
-#include "../actor.hpp"
+#include "../../multithlib/actor.hpp"
 #include "../printer/printer.hpp"
 
 struct PhysicsObject
@@ -33,7 +33,7 @@ public:
     
     void onTick();
     void giveOutboundActors(
-        std::weak_ptr<Actor<WindowHandler>> nprinter
+        std::weak_ptr<multith::Actor<WindowHandler>> nprinter
     );
     
     void pushPlayer(double pushX, double pushY);
@@ -41,7 +41,7 @@ public:
 private:
     
     struct OutboundActors {
-        std::weak_ptr<Actor<WindowHandler>> printer;
+        std::weak_ptr<multith::Actor<WindowHandler>> printer;
     }; std::optional<OutboundActors> outboundActors;
     
     PhysicsObject player;

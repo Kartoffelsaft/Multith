@@ -4,7 +4,7 @@
 
 #include <optional>
 
-#include "../actor.hpp"
+#include "../../multithlib/actor.hpp"
 #include "../staticAtomics.hpp"
 #include "../stateHandler/stateHandler.hpp"
 #include "../physicsModel/physicsModel.hpp"
@@ -25,8 +25,8 @@ public:
     void onTick();
 
     void giveOutboundActors(
-        std::weak_ptr<Actor<StateHandler>> nstate,
-        std::weak_ptr<Actor<PhysicsModel>> nmodel
+        std::weak_ptr<multith::Actor<StateHandler>> nstate,
+        std::weak_ptr<multith::Actor<PhysicsModel>> nmodel
     );
 
 private:
@@ -38,7 +38,7 @@ private:
     unsigned long long frame;
 
     struct OutboundActors{
-        std::weak_ptr<Actor<StateHandler>> state;
-        std::weak_ptr<Actor<PhysicsModel>> model;
+        std::weak_ptr<multith::Actor<StateHandler>> state;
+        std::weak_ptr<multith::Actor<PhysicsModel>> model;
     }; std::optional<OutboundActors> outboundActors;
 };

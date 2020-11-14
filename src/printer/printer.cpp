@@ -27,8 +27,8 @@ void WindowHandler::onTick()
 }
 
 void WindowHandler::giveOutboundActors(
-    std::weak_ptr<Actor<StateHandler>> nstate,
-    std::weak_ptr<Actor<PhysicsModel>> nmodel
+    std::weak_ptr<multith::Actor<StateHandler>> nstate,
+    std::weak_ptr<multith::Actor<PhysicsModel>> nmodel
 ){
     outboundActors = {
         nstate,

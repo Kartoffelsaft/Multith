@@ -7,17 +7,17 @@
 #include "./tickCoordinator/tickCoordinator.hpp"
 #include "./stateHandler/stateHandler.hpp"
 #include "./physicsModel/physicsModel.hpp"
-#include "./actor.hpp"
+#include "../multithlib/actor.hpp"
 #include "./staticAtomics.hpp"
 
 
 int main()
 {
     {
-        std::shared_ptr<Actor<WindowHandler>> window{new Actor<WindowHandler>};
-        std::shared_ptr<Actor<TickCoordinator>> tickCoordinator{new Actor<TickCoordinator>};
-        std::shared_ptr<Actor<StateHandler>> state{new Actor<StateHandler>};
-        std::shared_ptr<Actor<PhysicsModel>> model{new Actor<PhysicsModel>};
+        std::shared_ptr<multith::Actor<WindowHandler>> window{new multith::Actor<WindowHandler>};
+        std::shared_ptr<multith::Actor<TickCoordinator>> tickCoordinator{new multith::Actor<TickCoordinator>};
+        std::shared_ptr<multith::Actor<StateHandler>> state{new multith::Actor<StateHandler>};
+        std::shared_ptr<multith::Actor<PhysicsModel>> model{new multith::Actor<PhysicsModel>};
 
         tickCoordinator->call(&TickCoordinator::giveOutboundActors, 
             std::weak_ptr{window},
@@ -32,7 +32,7 @@ int main()
         );
         tickCoordinator->call(&TickCoordinator::tickLoop);
 
-        ActorReturn<bool> running;
+        multith::ActorReturn<bool> running;
         do
         {
             running = state->call(&StateHandler::isRunning);

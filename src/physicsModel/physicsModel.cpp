@@ -5,7 +5,7 @@
 #include "../tickCoordinator/tickCoordinator.hpp"
 
 void PhysicsModel::giveOutboundActors(
-    std::weak_ptr<Actor<WindowHandler>> nprinter
+    std::weak_ptr<multith::Actor<WindowHandler>> nprinter
 ){
     outboundActors = {
         nprinter

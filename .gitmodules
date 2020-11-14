@@ -1,0 +1,3 @@
+[submodule "multithlib"]
+	path = multithlib
+	url = git@github.com:Kartoffelsaft/multithlib.git
