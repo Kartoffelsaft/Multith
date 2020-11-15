@@ -7,9 +7,9 @@ float rand(in vec2 co)
 void main()
 {
     vec2 coord = gl_TexCoord[0].xy;
-    float brightness = 1.;
+    float brightness = 0.002;
 
-    float finalBWColor = rand(coord) * brightness;
+    float finalBWColor = clamp(brightness / rand(coord), 0., 1.);
 
     gl_FragColor = vec4(
         finalBWColor,
