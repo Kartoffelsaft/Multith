@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <SFML/Graphics/Shader.hpp>
 #include <optional>
 
 #include "../../multithlib/actor.hpp"
@@ -36,6 +37,8 @@ private:
 
     sf::RenderWindow window;
     unsigned long long frame;
+
+    sf::Shader bgShader;
 
     struct OutboundActors{
         std::weak_ptr<multith::Actor<StateHandler>> state;

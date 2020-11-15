@@ -1,5 +1,11 @@
 #include "./printer.hpp"
 
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Shader.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <cassert>
 
 WindowHandler::WindowHandler() :
@@ -10,7 +16,12 @@ WindowHandler::WindowHandler() :
         }
     },
     frame{0}
-{}
+{
+    bgShader.loadFromFile(
+        "./shaders/background/bg.frag", 
+        sf::Shader::Type::Fragment
+    );
+}
 
 WindowHandler::~WindowHandler()
 {
@@ -38,7 +49,16 @@ void WindowHandler::giveOutboundActors(
 
 void WindowHandler::renderPhysicsModel(PhysicsModelPrintable data)
 {
-    window.clear(sf::Color::Magenta);
+    auto size = window.getSize();
+
+    sf::RenderTexture bgTexture;
+    bgTexture.create(size.x, size.y);
+    bgTexture.clear(sf::Color::Black);
+    bgTexture.display();
+
+    sf::Sprite bgSprite(bgTexture.getTexture());
+    window.draw(bgSprite, &bgShader);
+
     data.addToWindow(&window, frame);
     
     window.display();
