@@ -40,6 +40,8 @@ private:
 
     sf::Shader bgShader;
 
+    sf::Shader ppFilmGrain;
+
     struct OutboundActors{
         std::weak_ptr<multith::Actor<StateHandler>> state;
         std::weak_ptr<multith::Actor<PhysicsModel>> model;

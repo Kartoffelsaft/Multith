@@ -1,4 +1,5 @@
 #include "./physicsModelPrintable.hpp"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 PhysicsObjectPrintable::PhysicsObjectPrintable(
     double nposX, 
@@ -29,7 +30,7 @@ PhysicsObjectPrintable::PhysicsObjectPrintable(
 void PhysicsModelPrintable::addPrintable(PhysicsObjectPrintable nprintable)
 {printables.push_back(nprintable);}
 
-void PhysicsModelPrintable::addToWindow(sf::RenderWindow* window, unsigned long long const frame)
+void PhysicsModelPrintable::addToWindow(sf::RenderTarget* window, unsigned long long const frame)
 {
     for(auto printable : printables)
     {

@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <vector>
 #include <map>
 
@@ -53,7 +54,7 @@ class PhysicsModelPrintable
 public:
     
     void addPrintable(PhysicsObjectPrintable nprintable);
-    void addToWindow(sf::RenderWindow* window, unsigned long long const frame);
+    void addToWindow(sf::RenderTarget* window, unsigned long long const frame);
     
 private:
     

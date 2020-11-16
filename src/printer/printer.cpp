@@ -21,6 +21,13 @@ WindowHandler::WindowHandler() :
         "./shaders/background/bg.frag", 
         sf::Shader::Type::Fragment
     );
+
+    ppFilmGrain.loadFromFile(
+        "./shaders/postprocessing/filmgrain.frag",
+        sf::Shader::Type::Fragment
+    );
+
+    ppFilmGrain.setUniform("unProcessed", sf::Shader::CurrentTexture);
 }
 
 WindowHandler::~WindowHandler()
@@ -51,16 +58,23 @@ void WindowHandler::renderPhysicsModel(PhysicsModelPrintable data)
 {
     auto size = window.getSize();
 
+    ppFilmGrain.setUniform("frame", (int)frame);
+
+    sf::RenderTexture prePostPrecessing;
+    prePostPrecessing.create(size.x, size.y);
+    prePostPrecessing.clear(sf::Color::Black);
+
     sf::RenderTexture bgTexture;
     bgTexture.create(size.x, size.y);
     bgTexture.clear(sf::Color::Black);
     bgTexture.display();
 
-    sf::Sprite bgSprite(bgTexture.getTexture());
-    window.draw(bgSprite, &bgShader);
+    prePostPrecessing.draw(sf::Sprite{bgTexture.getTexture()}, &bgShader);
 
-    data.addToWindow(&window, frame);
+    data.addToWindow(&prePostPrecessing, frame);
     
+    prePostPrecessing.display();
+    window.draw(sf::Sprite{prePostPrecessing.getTexture()}, &ppFilmGrain);
     window.display();
 
     frame++;
