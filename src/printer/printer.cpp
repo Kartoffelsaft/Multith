@@ -80,12 +80,6 @@ void WindowHandler::renderPhysicsModel(PhysicsModelPrintable data)
     frame++;
 }
 
-[[deprecated]]
-void WindowHandler::render()
-{
-    // no real use now
-}
-
 void WindowHandler::handleInput()
 {
     assert(outboundActors.has_value());

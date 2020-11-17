@@ -34,7 +34,6 @@ public:
 
 private:
 
-    void render();
     void handleInput();
     sf::Texture postProcess(sf::Texture const unProcessed) const;
 
