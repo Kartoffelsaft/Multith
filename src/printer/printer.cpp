@@ -74,7 +74,7 @@ void WindowHandler::renderPhysicsModel(PhysicsModelPrintable data)
     data.addToWindow(&prePostPrecessing, frame);
     
     prePostPrecessing.display();
-    window.draw(sf::Sprite{prePostPrecessing.getTexture()}, &ppFilmGrain);
+    window.draw(sf::Sprite{postProcess(prePostPrecessing.getTexture())});
     window.display();
 
     frame++;
@@ -112,4 +112,19 @@ void WindowHandler::handleInput()
                 break;
         }
     }
+}
+
+sf::Texture WindowHandler::postProcess(sf::Texture const unProcessed) const 
+{
+    auto size = window.getSize();
+
+    sf::RenderTexture processee;
+    processee.create(size.x, size.y);
+    sf::Sprite drawable{unProcessed};
+
+    processee.draw(drawable, &ppFilmGrain);
+    processee.display();
+    
+    
+    return processee.getTexture();
 }

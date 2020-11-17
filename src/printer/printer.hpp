@@ -2,7 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Shader.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <optional>
 
 #include "../../multithlib/actor.hpp"
@@ -34,6 +36,7 @@ private:
 
     void render();
     void handleInput();
+    sf::Texture postProcess(sf::Texture const unProcessed) const;
 
     sf::RenderWindow window;
     unsigned long long frame;

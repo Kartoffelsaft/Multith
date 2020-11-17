@@ -10,8 +10,8 @@ void main()
 {
     vec2 coord = gl_TexCoord[0].xy;
     float deviation = rand(vec3(coord, frame));
-    deviation /= 1.;
-    deviation += 0.5;
+    deviation /= 2.;
+    deviation += 0.75;
 
     gl_FragColor = texture2D(unProcessed, coord) * deviation;
 }
