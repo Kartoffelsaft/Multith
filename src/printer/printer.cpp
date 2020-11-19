@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <cassert>
+#include <cstdio>
 
 WindowHandler::WindowHandler(Settings const * const nsettings) :
     window{
@@ -31,6 +32,7 @@ WindowHandler::WindowHandler(Settings const * const nsettings) :
         );
 
         ppFilmGrain.setUniform("unProcessed", sf::Shader::CurrentTexture);
+        ppFilmGrain.setUniform("intensity", settings->filmgrainIntensity);
     }
 }
 

@@ -14,7 +14,7 @@ struct Settings
         filmgrainIntensity = config
             ["Graphics"]
             ["PostProcesing"]
-            ["filmgrainEnabled"]
+            ["filmgrainIntensity"]
             .value_or(0.0);
     }
 

@@ -1,5 +1,6 @@
 uniform int frame;
 uniform sampler2D unProcessed;
+uniform float intensity;
 
 float rand(vec3 co)
 {
@@ -10,8 +11,8 @@ void main()
 {
     vec2 coord = gl_TexCoord[0].xy;
     float deviation = rand(vec3(coord, frame));
-    deviation /= 2.;
-    deviation += 0.75;
+    deviation *= intensity;
+    deviation += 1. - intensity/2.;
 
     gl_FragColor = texture2D(unProcessed, coord) * deviation;
 }
