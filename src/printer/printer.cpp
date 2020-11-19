@@ -8,26 +8,30 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <cassert>
 
-WindowHandler::WindowHandler() :
+WindowHandler::WindowHandler(Settings const * const nsettings) :
     window{
         sf::RenderWindow{
             sf::VideoMode(WINDOW_INIT_SIZE_X, WINDOW_INIT_SIZE_Y), 
             WINDOW_NAME
         }
     },
-    frame{0}
+    frame{0},
+    settings{nsettings}
 {
     bgShader.loadFromFile(
         "./shaders/background/bg.frag", 
         sf::Shader::Type::Fragment
     );
 
-    ppFilmGrain.loadFromFile(
-        "./shaders/postprocessing/filmgrain.frag",
-        sf::Shader::Type::Fragment
-    );
+    if(settings->filmgrainEnabled)
+    {
+        ppFilmGrain.loadFromFile(
+            "./shaders/postprocessing/filmgrain.frag",
+            sf::Shader::Type::Fragment
+        );
 
-    ppFilmGrain.setUniform("unProcessed", sf::Shader::CurrentTexture);
+        ppFilmGrain.setUniform("unProcessed", sf::Shader::CurrentTexture);
+    }
 }
 
 WindowHandler::~WindowHandler()
@@ -112,13 +116,15 @@ sf::Texture WindowHandler::postProcess(sf::Texture const unProcessed) const
 {
     auto size = window.getSize();
 
+    sf::Shader const * PppFilmGrain = settings->filmgrainEnabled?
+        &ppFilmGrain : nullptr;
+
     sf::RenderTexture processee;
     processee.create(size.x, size.y);
     sf::Sprite drawable{unProcessed};
 
-    processee.draw(drawable, &ppFilmGrain);
+    processee.draw(drawable, PppFilmGrain);
     processee.display();
-    
     
     return processee.getTexture();
 }

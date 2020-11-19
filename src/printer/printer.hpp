@@ -9,6 +9,7 @@
 
 #include "../../multithlib/actor.hpp"
 #include "../staticAtomics.hpp"
+#include "../settings.hpp"
 #include "../stateHandler/stateHandler.hpp"
 #include "../physicsModel/physicsModel.hpp"
 #include "../physicsModel/physicsModelPrintable.hpp"
@@ -21,7 +22,7 @@ class PhysicsModel; // to fix some compiler recursion issue
 class WindowHandler
 {
 public:
-    WindowHandler();
+    WindowHandler(Settings const * const);
     ~WindowHandler();
 
     void renderPhysicsModel(PhysicsModelPrintable data);
@@ -36,6 +37,8 @@ private:
 
     void handleInput();
     sf::Texture postProcess(sf::Texture const unProcessed) const;
+
+    Settings const * const settings;
 
     sf::RenderWindow window;
     unsigned long long frame;

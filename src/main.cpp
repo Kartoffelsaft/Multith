@@ -20,7 +20,7 @@ int main()
     Settings const config{toml::parse_file("./settings.toml")};
 
     {
-        std::shared_ptr<multith::Actor<WindowHandler>> window{new multith::Actor<WindowHandler>};
+        std::shared_ptr<multith::Actor<WindowHandler>> window{new multith::Actor<WindowHandler>{&config}};
         std::shared_ptr<multith::Actor<TickCoordinator>> tickCoordinator{new multith::Actor<TickCoordinator>};
         std::shared_ptr<multith::Actor<StateHandler>> state{new multith::Actor<StateHandler>};
         std::shared_ptr<multith::Actor<PhysicsModel>> model{new multith::Actor<PhysicsModel>};
