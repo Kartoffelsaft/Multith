@@ -1,3 +1,6 @@
 [submodule "multithlib"]
 	path = multithlib
 	url = git@github.com:Kartoffelsaft/multithlib.git
+[submodule "tomlplusplus"]
+	path = tomlplusplus
+	url = https://github.com/marzer/tomlplusplus.git

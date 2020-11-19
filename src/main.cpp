@@ -1,18 +1,24 @@
+#include <SFML/Window/ContextSettings.hpp>
 #include <chrono>
 #include <thread>
 #include <atomic>
 #include <memory>
+#include <fstream>
 
 #include "./printer/printer.hpp"
 #include "./tickCoordinator/tickCoordinator.hpp"
 #include "./stateHandler/stateHandler.hpp"
 #include "./physicsModel/physicsModel.hpp"
 #include "../multithlib/actor.hpp"
+#include "../tomlplusplus/toml.hpp"
+#include "./settings.hpp"
 #include "./staticAtomics.hpp"
 
 
 int main()
 {
+    Settings const config{toml::parse_file("./settings.toml")};
+
     {
         std::shared_ptr<multith::Actor<WindowHandler>> window{new multith::Actor<WindowHandler>};
         std::shared_ptr<multith::Actor<TickCoordinator>> tickCoordinator{new multith::Actor<TickCoordinator>};

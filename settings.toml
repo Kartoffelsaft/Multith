@@ -1,0 +1,8 @@
+[General]
+
+[Graphics]
+
+[Graphics.PostProcesing]
+
+filmgrainEnabled = true
+filmgrainIntensity = 0.5
