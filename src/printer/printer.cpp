@@ -99,13 +99,13 @@ void WindowHandler::handleInput()
                 outboundActors->state.lock()->call(&StateHandler::close);
                 break;
             case sf::Event::KeyPressed:
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+                if(sf::Keyboard::isKeyPressed(settings->controls.up))
                 {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 0.0, -10.0);}
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                if(sf::Keyboard::isKeyPressed(settings->controls.down))
                 {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 0.0, 10.0);}
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+                if(sf::Keyboard::isKeyPressed(settings->controls.left))
                 {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, -10.0, 0.0);}
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                if(sf::Keyboard::isKeyPressed(settings->controls.right))
                 {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 10.0, 0.0);}
                 break;
             default:

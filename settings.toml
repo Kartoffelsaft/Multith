@@ -1,5 +1,12 @@
 [General]
 
+[Controls]
+
+up = "w"
+down = "s"
+left = "a"
+right = "d"
+
 [Graphics]
 
 [Graphics.PostProcesing]
