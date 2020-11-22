@@ -1,5 +1,7 @@
 #include "./printer.hpp"
 
+#include "../directories.hpp"
+
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -20,14 +22,14 @@ WindowHandler::WindowHandler(Settings const * const nsettings) :
     settings{nsettings}
 {
     bgShader.loadFromFile(
-        "./shaders/background/bg.frag", 
+        DIRECTORY_SHADERS"/background/bg.frag", 
         sf::Shader::Type::Fragment
     );
 
     if(settings->filmgrainEnabled)
     {
         ppFilmGrain.loadFromFile(
-            "./shaders/postprocessing/filmgrain.frag",
+            DIRECTORY_SHADERS"/postprocessing/filmgrain.frag",
             sf::Shader::Type::Fragment
         );
 

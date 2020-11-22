@@ -3,6 +3,7 @@
 #include "./physicsModel.hpp"
 #include "../printer/printer.hpp"
 #include "../tickCoordinator/tickCoordinator.hpp"
+#include "../directories.hpp"
 
 void PhysicsModel::giveOutboundActors(
     std::weak_ptr<multith::Actor<WindowHandler>> nprinter
@@ -42,7 +43,7 @@ PhysicsObjectPrintable PhysicsObject::generatePrintableSprite(char const * const
 PhysicsModelPrintable PhysicsModel::generatePrintable() const
 {
     PhysicsModelPrintable ret;
-    ret.addPrintable(player.generatePrintableSprite("./assets/sprites/spinny.png", 6));
+    ret.addPrintable(player.generatePrintableSprite(DIRECTORY_ASSETS"/sprites/spinny.png", 6));
     return ret;
 }
 
