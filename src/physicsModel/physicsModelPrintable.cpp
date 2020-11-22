@@ -65,7 +65,7 @@ sf::Texture* TextureCache::loadTexture(char const * const directory)
 {
     if(textureHash.count(directory))
     {
-        return &textureHash[directory];
+        return &textureHash.at(directory);
     }
     else
     {
