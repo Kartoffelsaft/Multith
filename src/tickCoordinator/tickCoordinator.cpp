@@ -23,7 +23,7 @@ void TickCoordinator::tickLoop()
     do
     {
         outboundActors->sendTicks();
-        running = outboundActors->state.lock()->call(&StateHandler::isRunning);
+        running = outboundActors->state.lock()->callBlockable(&StateHandler::isRunning);
 
         auto now = std::chrono::steady_clock::now();
 
@@ -40,5 +40,5 @@ void TickCoordinator::tickLoop()
 
 void TickCoordinator::OutboundActors::sendTicks()
 {
-    printer.lock()->call(&WindowHandler::onTick);
+    printer.lock()->callUnblockable(&WindowHandler::onTick);
 }

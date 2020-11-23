@@ -17,7 +17,7 @@ void PhysicsModel::onTick()
 {
     player.onTick();
     assert(outboundActors.has_value());
-    outboundActors->printer.lock()->call(&WindowHandler::renderPhysicsModel, generatePrintable());
+    outboundActors->printer.lock()->callUnblockable(&WindowHandler::renderPhysicsModel, generatePrintable());
 }
 
 void PhysicsObject::onTick()

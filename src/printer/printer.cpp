@@ -49,7 +49,7 @@ void WindowHandler::onTick()
     
     // pass tick through here instead of tickcoordinator
     // to prevent deadlock
-    outboundActors->model.lock()->call(&PhysicsModel::onTick);
+    outboundActors->model.lock()->callUnblockable(&PhysicsModel::onTick);
 }
 
 void WindowHandler::giveOutboundActors(
@@ -98,17 +98,17 @@ void WindowHandler::handleInput()
         switch(e.type)
         {
             case sf::Event::Closed:
-                outboundActors->state.lock()->call(&StateHandler::close);
+                outboundActors->state.lock()->callUnblockable(&StateHandler::close);
                 break;
             case sf::Event::KeyPressed:
                 if(sf::Keyboard::isKeyPressed(settings->controls.up))
-                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 0.0, -10.0);}
+                {outboundActors->model.lock()->callUnblockable(&PhysicsModel::pushPlayer, 0.0, -10.0);}
                 if(sf::Keyboard::isKeyPressed(settings->controls.down))
-                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 0.0, 10.0);}
+                {outboundActors->model.lock()->callUnblockable(&PhysicsModel::pushPlayer, 0.0, 10.0);}
                 if(sf::Keyboard::isKeyPressed(settings->controls.left))
-                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, -10.0, 0.0);}
+                {outboundActors->model.lock()->callUnblockable(&PhysicsModel::pushPlayer, -10.0, 0.0);}
                 if(sf::Keyboard::isKeyPressed(settings->controls.right))
-                {outboundActors->model.lock()->call(&PhysicsModel::pushPlayer, 10.0, 0.0);}
+                {outboundActors->model.lock()->callUnblockable(&PhysicsModel::pushPlayer, 10.0, 0.0);}
                 break;
             default:
                 break;
