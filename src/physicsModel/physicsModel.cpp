@@ -38,8 +38,6 @@ PhysicsObjectPrintable PhysicsObject::generatePrintableCircle(float radius) cons
 PhysicsObjectPrintable PhysicsObject::generatePrintableSprite(char const * const directory, unsigned int frame) const
 {return PhysicsObjectPrintable{posX, posY, directory, frame};}
 
-
-
 PhysicsModelPrintable PhysicsModel::generatePrintable() const
 {
     PhysicsModelPrintable ret;

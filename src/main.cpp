@@ -25,17 +25,24 @@ int main()
         std::shared_ptr<multith::Actor<StateHandler>> state{new multith::Actor<StateHandler>};
         std::shared_ptr<multith::Actor<PhysicsModel>> model{new multith::Actor<PhysicsModel>};
 
-        tickCoordinator->call(&TickCoordinator::giveOutboundActors, 
-            std::weak_ptr{window},
-            std::weak_ptr{state}
-        );
-        window->call(&WindowHandler::giveOutboundActors, 
-            std::weak_ptr{state},
-            std::weak_ptr{model}
-        );
-        model->call(&PhysicsModel::giveOutboundActors,
-            std::weak_ptr{window}
-        );
+        {
+            auto a = tickCoordinator->call(&TickCoordinator::giveOutboundActors, 
+                std::weak_ptr{window},
+                std::weak_ptr{state}
+            );
+            auto b = window->call(&WindowHandler::giveOutboundActors, 
+                std::weak_ptr{state},
+                std::weak_ptr{model}
+            );
+            auto c = model->call(&PhysicsModel::giveOutboundActors,
+                std::weak_ptr{window}
+            );
+
+            a.get();
+            b.get();
+            c.get();
+        }
+
         tickCoordinator->call(&TickCoordinator::tickLoop);
 
         multith::ActorReturn<bool> running;
